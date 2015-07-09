@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Manga Project</string>
+    <string-array name="NavbarlistArray">
+        <item name="Home">Home</item>
+        <item name="Most Downloaded">Most Downloaded</item>
+        <item name="Manga List">Manga List</item>
+        <item name="Downloaded Manga">Downloaded Manga</item>
+        <item name="Settings">Settings</item>
+        <item name="Exit">Exit</item>
+    </string-array>
+    <string name="draweropen">Drawer Open</string>
+    <string name="drawerclose">Drawer Close</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="drawertoggleopen">Open</string>
+    <string name="drawertoggleclose">Close</string>
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_chapterlistactivity">chapterlistactivity</string>
+</resources>
