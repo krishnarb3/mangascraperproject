@@ -1,6 +1,7 @@
 package com.dev.pro.noob.rb.mangaproject;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
@@ -26,10 +29,9 @@ public class ItemFragment extends Fragment implements AbsListView.OnItemClickLis
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private ArrayList<String> mParam1 = new ArrayList<>();
-    private int[] mParam2;
+    private ArrayList<String> mParam2 = new ArrayList<>();
     private OnFragmentInteractionListener mListener;
-    private AbsListView mListView;
-    private gridadapter mAdapter;
+    private ListView mListView;
 
     public ItemFragment()
     {
@@ -37,12 +39,12 @@ public class ItemFragment extends Fragment implements AbsListView.OnItemClickLis
     }
 
     // TODO: Rename and change types of parameters
-    public static ItemFragment newInstance(ArrayList<String> param1,int[] param2)
+    public static ItemFragment newInstance(ArrayList<String> param1,ArrayList<String> param2)
     {
         ItemFragment fragment = new ItemFragment();
         Bundle args = new Bundle();
         args.putStringArrayList(ARG_PARAM1, param1);
-        args.putIntArray(ARG_PARAM2,param2);
+        args.putStringArrayList(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -55,18 +57,18 @@ public class ItemFragment extends Fragment implements AbsListView.OnItemClickLis
         if (getArguments() != null)
         {
             mParam1 = getArguments().getStringArrayList(ARG_PARAM1);
-            mParam2 = getArguments().getIntArray(ARG_PARAM2);
+            mParam2 = getArguments().getStringArrayList(ARG_PARAM2);
         }
-        mAdapter = new gridadapter(getActivity(),mParam1,mParam2);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_item_grid, container, false);
-        mListView = (GridView) view.findViewById(R.id.grid);
-        mListView.setAdapter(mAdapter);
+        View view = inflater.inflate(R.layout.fragment_item_list, container, false);
+        mListView = (ListView)view.findViewById(R.id.list);
+        ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,mParam1);
+        mListView.setAdapter(adapter);
         mListView.setOnItemClickListener(this);
         return view;
     }
@@ -98,14 +100,13 @@ public class ItemFragment extends Fragment implements AbsListView.OnItemClickLis
     {
         if (null != mListener)
         {
-            // Notify the active callbacks interface (the activity, if the
-            // fragment is attached to one) that an item has been selected.
             String TAG="TAG";
             Log.d(TAG,mParam1.get(position).toLowerCase());
-            Intent intent = new Intent(getActivity(),chapterlistactivity.class);
+            Intent intent = new Intent(getActivity(),MangaSelected.class);
             intent.putExtra("manganame",mParam1.get(position).toLowerCase());
+            intent.putExtra("mangalink",mParam2.get(position).toLowerCase());
             startActivity(intent);
-            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+            //mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
         }
     }
 

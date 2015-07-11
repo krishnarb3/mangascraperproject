@@ -1,40 +1,22 @@
 package com.dev.pro.noob.rb.mangaproject;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 
 public class MainActivity extends ActionBarActivity implements ItemFragment.OnFragmentInteractionListener
@@ -89,11 +71,12 @@ public class MainActivity extends ActionBarActivity implements ItemFragment.OnFr
                 {
                     Toast.makeText(getApplicationContext(),"Toast onclick",Toast.LENGTH_SHORT).show();
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    ArrayList<String> arrayList1= null;
-                    ItemFragment fragment = ItemFragment.newInstance(arrayList2,imagesarray2);
+                    chapterlistclass chapterlist = new chapterlistclass(MainActivity.this);
+                    ArrayList<ArrayList<String>> arrayList1= new ArrayList<ArrayList<String>>();
+                    arrayList1=chapterlist.returndata();
+                    ItemFragment fragment = ItemFragment.newInstance(arrayList1.get(0),arrayList1.get(1));
                     ft.add(R.id.mainfragment,fragment,"Main Fragment");
                     ft.commit();
-
                 }
             }
         });

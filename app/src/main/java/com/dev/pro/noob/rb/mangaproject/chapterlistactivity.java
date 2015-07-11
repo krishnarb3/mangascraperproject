@@ -42,6 +42,7 @@ public class chapterlistactivity extends ActionBarActivity
         } catch (Exception e)
         {
         }
+        Toast.makeText(getApplicationContext(),results.toString(),Toast.LENGTH_SHORT).show();
         ListView listView = (ListView)findViewById(R.id.chapterslist);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,results);
         listView.setAdapter(adapter);

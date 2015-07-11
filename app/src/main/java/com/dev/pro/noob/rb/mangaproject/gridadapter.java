@@ -16,14 +16,12 @@ import java.util.ArrayList;
 public class gridadapter extends ArrayAdapter<String>
 {
     ArrayList<String> manganames = new ArrayList<>();
-    int[] mangapictures;
     Context context;
-    public gridadapter(Context context, ArrayList<String> manganames,int[] mangapictures)
+    public gridadapter(Context context, ArrayList<String> manganames)
     {
         super(context,R.layout.layout_mangagrid,manganames);
         this.context=context;
         this.manganames=manganames;
-        this.mangapictures=mangapictures;
     }
 
     @Override
@@ -32,10 +30,7 @@ public class gridadapter extends ArrayAdapter<String>
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View view = inflater.inflate(R.layout.layout_mangagrid,parent,false);
         TextView textView = (TextView)view.findViewById(R.id.gridtext);
-        ImageView imageView = (ImageView)view.findViewById(R.id.gridimage);
         textView.setText(manganames.get(position));
-        if(position==0)
-        imageView.setImageResource(mangapictures[position]);
         return view;
     }
 }

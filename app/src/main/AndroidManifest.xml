@@ -3,7 +3,7 @@
     package="com.dev.pro.noob.rb.mangaproject" >
 
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -26,6 +26,23 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.dev.pro.noob.rb.mangaproject.MainActivity" />
         </activity>
+        <activity
+            android:name=".MangaSelected"
+            android:label="@string/title_activity_manga_selected"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.dev.pro.noob.rb.mangaproject.MainActivity" />
+        </activity>
+        <activity
+            android:name=".Chapters"
+            android:label="@string/title_activity_chapters"
+            android:parentActivityName=".MangaSelected" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.dev.pro.noob.rb.mangaproject.MangaSelected" />
+        </activity>
+        <service android:name=".DownloadService"/>
     </application>
 
 </manifest>
