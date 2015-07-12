@@ -36,87 +36,15 @@ public class Chapters extends ActionBarActivity
     ListView listView;
     File path;
     Bitmap bitmap;
-    public class Imagetask extends AsyncTask<Void,Void,Void>
-    {
-        int chapterno;
-        File path;
-        ArrayList<Bitmap> bitmaps = new ArrayList<>();
-        InputStream in;
-        ArrayList<String> imagesurl = new ArrayList<>();
-        public Imagetask(ArrayList<String> imagesurl,File path,int chapterno)
-        {
-            this.imagesurl = imagesurl;
-            this.path = path;
-            this.chapterno = chapterno;
-        }
-
-        @Override
-        protected void onPreExecute()
-        {
-            super.onPreExecute();
-            pd = ProgressDialog.show(Chapters.this,"","Downloading...",true);
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids)
-        {
-            for(int i=0;i<imagesurl.size();i++)
-            {
-                try
-                {
-                    in=new URL(imagesurl.get(i)).openStream();
-                    Log.d(TAG,imagesurl.get(i));
-                    BitmapFactory.Options options = new BitmapFactory.Options();
-                    options.inJustDecodeBounds = false;
-                    options.inPreferredConfig = Bitmap.Config.RGB_565;
-                    options.inDither = true;
-                    bitmap = BitmapFactory.decodeStream(in);
-                        File file = new File(path,(chapterno)+" - "+(i+1)+".jpg");
-                        FileOutputStream fileOutputStream = null;
-                        try
-                        {
-                            fileOutputStream = new FileOutputStream(file);
-                            bitmap.compress(Bitmap.CompressFormat.JPEG,80,fileOutputStream);
-                        } catch (Exception e)
-                        {
-                        }
-
-                } catch (Exception e)
-                {
-                    Log.d(TAG,e+"");
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void avoid)
-        {
-
-            pd.dismiss();
-            Toast.makeText(getApplicationContext(),"ALL Images Saved Successfully",Toast.LENGTH_SHORT).show();
-            super.onPostExecute(avoid);
-        }
-    }
     public BroadcastReceiver receiver = new BroadcastReceiver()
     {
-        Imagetask task;
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            ArrayList<String> imagesurl = new ArrayList<>();
-            Bundle bundle = intent.getExtras();
-            String manganamefromservice;
-            imagesurl = bundle.getStringArrayList("imagesurl");
-            manganamefromservice = bundle.getString("manganame");
-            Integer chapterno;
-            chapterno = bundle.getInt("chapterno");
-            path = new File(Environment.getExternalStorageDirectory().toString()+"/MangaDownloader/"+manganamefromservice+"/");
-            if(!path.exists())
-                path.mkdirs();
-            task = new Imagetask(imagesurl,path,chapterno);
-            task.execute();
-            Toast.makeText(getApplicationContext(),"Download complete "+imagesurl.size(),Toast.LENGTH_LONG).show();
+            Bundle bundle = getIntent().getExtras();
+            String manganame = bundle.getString("manganame");
+            Log.d(TAG,manganame);
+            //pd.dismiss();
         }
 
     };
@@ -142,6 +70,7 @@ public class Chapters extends ActionBarActivity
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
             {
+                //pd = ProgressDialog.show(Chapters.this,"","Loading...",true);
                 Intent intent = new Intent(Chapters.this,DownloadService.class);
                 intent.putExtra("page1",chapterslinks.get(i));
                 intent.putExtra("manganame", finalManganame);

@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -47,9 +48,12 @@ public class chapterlistclass
     }
     public class getpopmangalistTask extends AsyncTask<Void,Void,ArrayList<ArrayList<String>>>
     {
+        ProgressDialog pd;
         @Override
         protected void onPreExecute()
         {
+            pd = ProgressDialog.show(context,"","Loading...",true);
+            Toast.makeText(context,"SHOW",Toast.LENGTH_SHORT).show();
             Log.d(TAG,"ON PREEXECUTE");
             super.onPreExecute();
         }
@@ -76,7 +80,7 @@ public class chapterlistclass
         @Override
         protected void onPostExecute(ArrayList<ArrayList<String>> arrayLists)
         {
-
+            pd.dismiss();
             super.onPostExecute(arrayLists);
         }
     }
