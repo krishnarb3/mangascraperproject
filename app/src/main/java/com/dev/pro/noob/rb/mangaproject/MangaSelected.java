@@ -156,6 +156,7 @@ public class MangaSelected extends ActionBarActivity
         protected void onPostExecute(ArrayList<ArrayList<String>> arrayLists)
         {
             Log.d(TAG,"Onpostexecute");
+            Log.d(TAG,arrayLists.toString());
             taskresults = arrayLists;
             s=taskresults.get(0).get(0);
             adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_list_item_1,new ArrayList<String>(Arrays.asList(taskresults.get(1).get(0))));
@@ -177,14 +178,21 @@ public class MangaSelected extends ActionBarActivity
 
             }
         };
-        if(Character.isDigit(mangalink.charAt(1)))
+        //if(Character.isDigit(mangalink.charAt(1)))
         {
             int t=0;
+
             for(int a=1;a<mangalink.length();a++)
+            {
                 if(mangalink.charAt(a)=='/')
                     t=a;
+            }
+            if(t==0)
+                t=mangalink.length()-1;
+            Log.d(TAG,t+"");
             Document document = null;
             Tidy tidy = new Tidy();
+            tidy.setTrimEmptyElements(false);
             tidy.setXHTML(true);
             document = tidy.parseDOM(inputStream, stream);
             Document document1 = (org.w3c.dom.Document) document;
@@ -221,15 +229,16 @@ public class MangaSelected extends ActionBarActivity
                     }
 
                 }
-                if(mangachapterslinks.get(k).startsWith(mangalink.substring(0,t))||mangachapterslinks.get(k).startsWith(mangalink.substring(t,mangalink.length()-5)))
+                if(mangachapterslinks.get(k).startsWith(mangalink))
                     mangachapterslinks2.add(mangachapterslinks.get(k));
             }
             for(int i=0;i<6;i++)
-            mangachapterslinks2.remove(i);
+            mangachapterslinks2.remove(0);
             finalresult.add(mangachapterslinks2);
             Log.d(TAG,mangachapterslinks2.size()+"");
+            Log.d(TAG,mangachapterslinks2.toString());
         }
-        else
+        /*else
         {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             try
@@ -281,7 +290,7 @@ public class MangaSelected extends ActionBarActivity
             {
 
             }
-        }
+        }*/
         return finalresult;
     }
     @Override

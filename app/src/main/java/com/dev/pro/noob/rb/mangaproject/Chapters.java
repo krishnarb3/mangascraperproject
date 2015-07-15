@@ -5,10 +5,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +21,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -27,6 +31,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class Chapters extends ActionBarActivity
@@ -36,6 +42,9 @@ public class Chapters extends ActionBarActivity
     ListView listView;
     File path;
     Bitmap bitmap;
+    Integer recievechapterno=-1;
+    String chapternos="";
+    databaseclass helper;
     public BroadcastReceiver receiver = new BroadcastReceiver()
     {
         @Override
@@ -43,6 +52,11 @@ public class Chapters extends ActionBarActivity
         {
             Bundle bundle = getIntent().getExtras();
             String manganame = bundle.getString("manganame");
+            recievechapterno = bundle.getInt("chapterno");
+            Log.d(TAG,recievechapterno+"");
+            //long id = helper.insert(manganame,recievechapterno);
+            //if(id>0)
+            //    Toast.makeText(getApplicationContext(),"Saved download to history",Toast.LENGTH_SHORT).show();
             Log.d(TAG,manganame);
             //pd.dismiss();
         }
@@ -53,11 +67,15 @@ public class Chapters extends ActionBarActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chapters);
-
+        helper = new databaseclass(this);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(Chapters.this);
         Bundle bundle = getIntent().getExtras();
         listView = (ListView)findViewById(R.id.chapter);
         final ArrayList<String> chapterslinks = bundle.getStringArrayList("chapterslinks");
         String manganame = bundle.getString("manganame");
+        String chapternoslocal = sharedPreferences.getString(manganame,"");
+        if(!chapternoslocal.equals(""))
+            chapternos = chapternoslocal;
         manganame = manganame.substring(0,1).toUpperCase()+manganame.substring(1);
         ArrayList<String> chapterslist = new ArrayList<>();
         for(int i=0;i<chapterslinks.size();i++)
@@ -70,11 +88,18 @@ public class Chapters extends ActionBarActivity
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
             {
+
                 //pd = ProgressDialog.show(Chapters.this,"","Loading...",true);
                 Intent intent = new Intent(Chapters.this,DownloadService.class);
                 intent.putExtra("page1",chapterslinks.get(i));
                 intent.putExtra("manganame", finalManganame);
-                intent.putExtra("chapterno",i);
+                intent.putExtra("chapterno",i+1);
+                Log.d(TAG,chapterslinks.toString());
+                Log.d(TAG,i+"- chapterno");
+                if(i+1==recievechapterno)
+                {
+                    view.setBackgroundColor(Color.BLUE);
+                }
                 startService(intent);
             }
         });

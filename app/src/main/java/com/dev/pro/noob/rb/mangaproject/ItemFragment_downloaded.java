@@ -1,23 +1,16 @@
 package com.dev.pro.noob.rb.mangaproject;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.GridView;
 import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
@@ -25,29 +18,44 @@ import com.dev.pro.noob.rb.mangaproject.dummy.DummyContent;
 
 import java.util.ArrayList;
 
-public class ItemFragment extends Fragment implements AbsListView.OnItemClickListener
+/**
+ * A fragment representing a list of Items.
+ * <p/>
+ * Large screen devices (such as tablets) are supported by replacing the ListView
+ * with a GridView.
+ * <p/>
+ * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
+ * interface.
+ */
+public class ItemFragment_downloaded extends Fragment implements AbsListView.OnItemClickListener
 {
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private ArrayList<String> mParam1 = new ArrayList<>();
-    private ArrayList<String> mParam2 = new ArrayList<>();
+
+    private ArrayList<String> mParam1=new ArrayList<>();
+    private int[] mParam2;
+    private ArrayList<String> arrayList=new ArrayList<>();
     private OnFragmentInteractionListener mListener;
-    private ListView mListView;
+    private AbsListView mListView;
+    private ListAdapter mAdapter;
 
-    public ItemFragment()
+    public static ItemFragment_downloaded newInstance(ArrayList<String> param1, int[] param2)
     {
-
-    }
-
-    // TODO: Rename and change types of parameters
-    public static ItemFragment newInstance(ArrayList<String> param1,ArrayList<String> param2)
-    {
-        ItemFragment fragment = new ItemFragment();
+        ItemFragment_downloaded fragment = new ItemFragment_downloaded();
         Bundle args = new Bundle();
         args.putStringArrayList(ARG_PARAM1, param1);
-        args.putStringArrayList(ARG_PARAM2, param2);
+        args.putIntArray(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    /**
+     * Mandatory empty constructor for the fragment manager to instantiate the
+     * fragment (e.g. upon screen orientation changes).
+     */
+    public ItemFragment_downloaded()
+    {
     }
 
     @Override
@@ -58,19 +66,21 @@ public class ItemFragment extends Fragment implements AbsListView.OnItemClickLis
         if (getArguments() != null)
         {
             mParam1 = getArguments().getStringArrayList(ARG_PARAM1);
-            mParam2 = getArguments().getStringArrayList(ARG_PARAM2);
+            mParam2 = getArguments().getIntArray(ARG_PARAM2);
+            for(int i=0;i<mParam1.size();i++)
+                arrayList.add(0,mParam1.get(i)+" - "+mParam2[i]);
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_item_list, container, false);
-        mListView = (ListView)view.findViewById(R.id.list);
-        ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,mParam1);
-        mListView.setAdapter(adapter);
-        mListView.setFastScrollEnabled(true);
+        View view = inflater.inflate(R.layout.fragment_itemdownloaded, container, false);
+
+        mListView = (AbsListView) view.findViewById(android.R.id.list);
+        ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,arrayList);
+        ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
+        // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
         return view;
     }
@@ -102,14 +112,7 @@ public class ItemFragment extends Fragment implements AbsListView.OnItemClickLis
     {
         if (null != mListener)
         {
-            String TAG="TAG";
-            Log.d(TAG,mParam1.get(position).toLowerCase());
-            Intent intent = new Intent(getActivity(),MangaSelected.class);
-            intent.putExtra("manganame",mParam1.get(position).toLowerCase());
-
-            intent.putExtra("mangalink",mParam2.get(position).toLowerCase());
-            startActivity(intent);
-            //mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
         }
     }
 
@@ -140,7 +143,6 @@ public class ItemFragment extends Fragment implements AbsListView.OnItemClickLis
      */
     public interface OnFragmentInteractionListener
     {
-        // TODO: Update argument type and name
         public void onFragmentInteraction(String id);
     }
 

@@ -18,10 +18,13 @@ import android.widget.Toast;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.tidy.Tidy;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -37,6 +40,7 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 public class DownloadService extends IntentService
 {
+    databaseclass helper;
     NotificationManager notifyManager;
     Builder builder;
     int id=1;
@@ -60,6 +64,7 @@ public class DownloadService extends IntentService
         manganame = intent.getStringExtra("manganame");
         chapterpg1 = "http://www.mangareader.net"+chapterpage1;
         chapterno = intent.getIntExtra("chapterno",0);
+        helper = new databaseclass(this);
         URL url = null;
         try
         {
@@ -70,6 +75,8 @@ public class DownloadService extends IntentService
             urlConnection.setRequestMethod("GET");
             InputStream inputStream = urlConnection.getInputStream();
             pagesurl = parseforPagesurl(inputStream);
+            if(pagesurl.size()==0)
+                pagesurl = parseforPagesurlxmldirty(inputStream);
             Log.d(TAG,"Pagesurl - "+pagesurl.toString());
             imagessrcurl = parseforImagesurl(pagesurl);
             Log.d(TAG,"Imagessrcurl"+imagessrcurl.toString());
@@ -154,7 +161,7 @@ public class DownloadService extends IntentService
         @Override
         protected void onPostExecute(Void avoid)
         {
-
+            long id2 = helper.insert(manganame,chapterno);
             Toast.makeText(getApplicationContext(),"ALL Images Saved Successfully",Toast.LENGTH_SHORT).show();
             super.onPostExecute(avoid);
             builder.setContentText("Download complete");
@@ -185,6 +192,37 @@ public class DownloadService extends IntentService
         {
             Log.d(TAG,e+"" );
         }
+        return imagesurl;
+    }
+    public ArrayList<String> parseforPagesurlxmldirty(InputStream inputStream)
+    {
+        ArrayList<String> imagesurl = new ArrayList<>();
+        OutputStream stream= new OutputStream()
+        {
+            @Override
+            public void write(int i) throws IOException
+            {
+
+            }
+        };
+        Document document = null;
+        Tidy tidy = new Tidy();
+        tidy.setXHTML(true);
+        document=tidy.parseDOM(inputStream,stream);
+        Document document1 = (org.w3c.dom.Document)document;
+        Log.d(TAG,"Dirty");
+        org.w3c.dom.Element root = (org.w3c.dom.Element) document1.getDocumentElement();
+            NodeList pagesurlnodelist = root.getElementsByTagName("option");
+            Node node;
+        Log.d(TAG,pagesurlnodelist.getLength()+"");
+            for(int i=0;i<pagesurlnodelist.getLength();i++)
+            {
+                node = pagesurlnodelist.item(i);
+                Log.d(TAG,node.getAttributes().item(0).getTextContent());
+                imagesurl.add(node.getAttributes().item(0).getTextContent());
+
+            }
+
         return imagesurl;
     }
     public ArrayList<String> parseforImagesurl(ArrayList<String> arrayList)
