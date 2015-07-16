@@ -67,17 +67,20 @@ public class MainActivity extends ActionBarActivity implements ItemFragment.OnFr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar)findViewById(R.id.app_bar);
+        toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         preferences = getSharedPreferences("fullmangalistnames", Context.MODE_PRIVATE);
         helper = new databaseclass(this);
         dataarray = helper.getAllData();
         manganames = dataarray.get(0);
+        Collections.reverse(manganames);
         editText = (EditText)findViewById(R.id.edittext);
         editText.getLayoutParams().height=0;
         editText.setInputType(0);
         chapternos = new int[manganames.size()];
         chapternosarraylist = dataarray.get(1);
+        Collections.reverse(chapternosarraylist);
         for(int i=0;i<manganames.size();i++)
             chapternos[i]=Integer.parseInt(chapternosarraylist.get(i));
         navbarfragment=(Navbarfragment)getSupportFragmentManager().findFragmentById(R.id.navbarfragment);
@@ -125,14 +128,16 @@ public class MainActivity extends ActionBarActivity implements ItemFragment.OnFr
                         getpopmangalistTask task = new getpopmangalistTask();
                         task.execute();
                         mostpopular = false;
-                        view.setBackgroundColor(Color.CYAN);
-                        TextView textView = (TextView) view.findViewById(R.id.listtext);
-                        textView.setTextColor(Color.BLACK);
+                        view.setBackgroundColor(getResources().getColor(R.color.accentcolor));
+                        //editText.getLayoutParams().height=30;
+                        //editText.setHint("ENNAMA");
                     }
                 }
                 if(i==2)
                 {
+                    view.setBackgroundColor(getResources().getColor(R.color.accentcolor));
                     editText.getLayoutParams().height=30;
+                    editText.setHint("ENNAMA");
                     editText.addTextChangedListener(watcher);
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                     if(preferences!=null)
@@ -146,17 +151,35 @@ public class MainActivity extends ActionBarActivity implements ItemFragment.OnFr
                         curfrag_mangalinks = fulllist_mangalinks;
                         ft.replace(R.id.mainfragment, fragment, "Main Fragment");
                         ft.commit();
+
                     }
                     getfullmangalistTask task = new getfullmangalistTask();
                     task.execute();
                 }
                 if(i==3)
                 {
+                    view.setBackgroundColor(getResources().getColor(R.color.accentcolor));
                     editText.getLayoutParams().height=30;
-                    editText.addTextChangedListener(watcher);
-                    view.setBackgroundColor(Color.CYAN);
-                    TextView textView = (TextView) view.findViewById(R.id.listtext);
-                    textView.setTextColor(Color.BLACK);
+                    editText.addTextChangedListener(new TextWatcher()
+                    {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
+                        {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)
+                        {
+                        Log.d(TAG,"WATCHING");
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable)
+                        {
+
+                        }
+                    });
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                     ItemFragment_downloaded ifd = ItemFragment_downloaded.newInstance(manganames,chapternos);
                     ft.replace(R.id.mainfragment,ifd,"Main Fragment");
@@ -314,6 +337,9 @@ public class MainActivity extends ActionBarActivity implements ItemFragment.OnFr
                 ItemFragment fragment = ItemFragment.newInstance(arrayLists.get(0), arrayLists.get(1));
                 ft.replace(R.id.mainfragment, fragment, "Main Fragment");
                 ft.commit();
+                editText = (EditText)findViewById(R.id.edittext);
+                editText.getLayoutParams().height=30;
+                editText.setHint("ENNAMA");
             }catch (Exception e)
         {
             Toast.makeText(MainActivity.this,"Connection Error",Toast.LENGTH_SHORT).show();

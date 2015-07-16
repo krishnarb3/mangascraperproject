@@ -2,13 +2,15 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:context="com.dev.pro.noob.rb.mangaproject.Chapters">
-    <include android:id="@+id/app_bar_chapters" layout="@layout/app_bar"/>
-    <ListView
+                android:background="#000"
+                tools:context="com.dev.pro.noob.rb.mangaproject.ImageActivity">
+
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/app_bar_chapters"
-        android:padding="10dp"
-        android:id="@+id/chapter"/>
+        android:id="@+id/image"
+        android:keepScreenOn="true"
+        android:layout_centerInParent="true"
+        />
 
 </RelativeLayout>

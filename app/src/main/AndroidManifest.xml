@@ -3,8 +3,9 @@
     package="com.dev.pro.noob.rb.mangaproject" >
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -43,7 +44,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.dev.pro.noob.rb.mangaproject.MangaSelected" />
         </activity>
-        <service android:name=".DownloadService"/>
+
+        <service android:name=".DownloadService" />
+
+        <activity
+            android:name=".ImageActivity"
+            android:label="@string/title_activity_image"
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+        </activity>
     </application>
 
 </manifest>

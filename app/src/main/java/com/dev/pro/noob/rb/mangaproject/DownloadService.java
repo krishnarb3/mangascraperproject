@@ -145,6 +145,8 @@ public class DownloadService extends IntentService
                     {
                         fileOutputStream = new FileOutputStream(file);
                         bitmap.compress(Bitmap.CompressFormat.JPEG,80,fileOutputStream);
+                        sendprogress(i,imagesurl.size());
+                        //Log.d(TAG,"BITAPPROGRESS  "+i);
                     } catch (Exception e)
                     {
                     }
@@ -257,6 +259,14 @@ public class DownloadService extends IntentService
         intent.putExtra("imagesurl",imagessrcurl);
         intent.putExtra("manganame",manganame);
         intent.putExtra("chapterno",chapterno);
+        sendBroadcast(intent);
+    }
+    public void sendprogress(int i,int j)
+    {
+        Intent intent = new Intent(NOTIFICATION_SERVICE);
+        intent.putExtra("progress",i+1);
+        intent.putExtra("totalimages",j);
+        Log.d(TAG,i+"progress");
         sendBroadcast(intent);
     }
 }

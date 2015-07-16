@@ -19,4 +19,9 @@
     <string name="title_activity_chapterlistactivity">chapterlistactivity</string>
     <string name="title_activity_manga_selected">MangaSelected</string>
     <string name="title_activity_chapters">Chapters</string>
+
+    <!--<string name="title_activity_image_fullscreen">ImageFullscreenActivity</string>-->
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_image">ImageActivity</string>
 </resources>

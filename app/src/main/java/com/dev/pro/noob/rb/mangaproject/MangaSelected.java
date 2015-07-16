@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -159,7 +161,17 @@ public class MangaSelected extends ActionBarActivity
             Log.d(TAG,arrayLists.toString());
             taskresults = arrayLists;
             s=taskresults.get(0).get(0);
-            adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_list_item_1,new ArrayList<String>(Arrays.asList(taskresults.get(1).get(0))));
+            adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_list_item_1,new ArrayList<String>(Arrays.asList(taskresults.get(1).get(0))))
+            {
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent)
+                {
+                    View view = super.getView(position, convertView, parent);
+                    TextView textView = (TextView)view.findViewById(android.R.id.text1);
+                    textView.setTextColor(Color.BLACK);
+                    return view;
+                }
+            };
             descp.setAdapter(adapter);
             pd.dismiss();
             bitmapTask.execute();

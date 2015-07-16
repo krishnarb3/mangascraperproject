@@ -1,6 +1,7 @@
 package com.dev.pro.noob.rb.mangaproject;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -68,7 +69,7 @@ public class ItemFragment_downloaded extends Fragment implements AbsListView.OnI
             mParam1 = getArguments().getStringArrayList(ARG_PARAM1);
             mParam2 = getArguments().getIntArray(ARG_PARAM2);
             for(int i=0;i<mParam1.size();i++)
-                arrayList.add(0,mParam1.get(i)+" - "+mParam2[i]);
+                arrayList.add(mParam1.get(i)+" - "+mParam2[i]);
         }
     }
 
@@ -112,6 +113,10 @@ public class ItemFragment_downloaded extends Fragment implements AbsListView.OnI
     {
         if (null != mListener)
         {
+            Intent intent = new Intent(getActivity(),ImageActivity.class);
+            intent.putExtra("manganame",mParam1.get(position));
+            intent.putExtra("chapterno",mParam2[position]);
+            startActivity(intent);
             mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
         }
     }

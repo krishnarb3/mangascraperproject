@@ -10,6 +10,7 @@
         android:background="@color/primarycolordark"
         android:layout_centerHorizontal="true"
         android:gravity="center"
+        android:textColor="#fff"
         android:textAlignment="center"
         android:id="@+id/manganame"
         android:textSize="@dimen/abc_text_size_large_material"/>
@@ -26,6 +27,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Description"
+
         android:textSize="@dimen/abc_text_size_large_material"
         android:id="@+id/descriptiontext"
         android:layout_below="@+id/mangaimage"
@@ -48,6 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Download Chapters"
+        android:textColor="#fff"
         android:background="@color/primarycolordark"
         android:id="@+id/downloadbutton"
         android:layout_alignParentBottom="true"
