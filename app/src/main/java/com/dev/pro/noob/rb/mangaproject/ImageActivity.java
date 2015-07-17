@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,15 +16,20 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.ArrayList;
 
 
 public class ImageActivity extends Activity implements GestureDetector.OnGestureListener
 {
-    Integer i;
+    ViewPager viewpager;
+    Integer i=1;
     String TAG="TAG";
     String manganame;
     int chapterno;
     ImageView imageView;
+    private FullScreenImageAdapter adapter;
+    ArrayList<String> bitmapspaths = new ArrayList<>();
+    Boolean t=true;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -33,15 +39,22 @@ public class ImageActivity extends Activity implements GestureDetector.OnGesture
         manganame = bundle.getString("manganame");
         chapterno = bundle.getInt("chapterno");
         imageView = (ImageView) findViewById(R.id.image);
+        viewpager = (ViewPager) findViewById(R.id.viewpager);
         Log.d(TAG, manganame + " - manganame");
-        nextimage(1);
-
+        while(t)
+        {
+            t=nextimage(i);
+            i++;
+        }
+        adapter=new FullScreenImageAdapter(ImageActivity.this,bitmapspaths);
+        viewpager.setAdapter(adapter);
+        viewpager.setCurrentItem(0);
     }
-    public void nextimage(Integer integer)
+    public Boolean nextimage(Integer integer)
     {
         File path;
         Bitmap bitmap;
-
+        Boolean response=false;
         try
         {
             BitmapFactory.Options options = new BitmapFactory.Options();
@@ -49,24 +62,29 @@ public class ImageActivity extends Activity implements GestureDetector.OnGesture
             options.inPreferredConfig = Bitmap.Config.RGB_565;
             options.inDither = true;
             path = new File(Environment.getExternalStorageDirectory().toString() + "/MangaDownloader/" + manganame + "/");
-            File file = new File(path, (chapterno) + " - " + 1 + ".jpg");
+            File file = new File(path, (chapterno) + " - " + integer + ".jpg");
             if (file.exists())
             {
+                response = true;
                 String imagepath = Environment.getExternalStorageDirectory().toString() + "/MangaDownloader/" + manganame + "/"+Integer.toString(chapterno) + " - " + integer + ".jpg";
-                bitmap = BitmapFactory.decodeFile(imagepath);
-                if(bitmap!=null)
-                imageView.setImageBitmap(bitmap);
+                if(!imagepath.isEmpty())
+                {
+                    bitmapspaths.add(imagepath);
+                    Log.d(TAG,imagepath);
+                }
                 else
-                    Toast.makeText(getApplicationContext(),"End of Chapter",Toast.LENGTH_SHORT).show();
-                Log.d(TAG,imagepath);
-                //Log.d(TAG,bitmap.toString());
+                {
+                    Toast.makeText(getApplicationContext(), "End of Chapter", Toast.LENGTH_SHORT).show();
+                    response = false;
+                }
             }
-
-
+            else
+                response = false;
         } catch (Exception e)
         {
             Log.d(TAG, e + "");
         }
+        return response;
     }
 
     @Override

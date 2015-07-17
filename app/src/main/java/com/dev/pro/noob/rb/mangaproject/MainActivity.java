@@ -158,6 +158,14 @@ public class MainActivity extends ActionBarActivity implements ItemFragment.OnFr
                 }
                 if(i==3)
                 {
+                    dataarray = helper.getAllData();
+                    manganames = dataarray.get(0);
+                    Collections.reverse(manganames);
+                    chapternos = new int[manganames.size()];
+                    chapternosarraylist = dataarray.get(1);
+                    Collections.reverse(chapternosarraylist);
+                    for(int t=0;t<manganames.size();t++)
+                        chapternos[t]=Integer.parseInt(chapternosarraylist.get(t));
                     view.setBackgroundColor(getResources().getColor(R.color.accentcolor));
                     editText.getLayoutParams().height=30;
                     editText.addTextChangedListener(new TextWatcher()
