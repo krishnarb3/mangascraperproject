@@ -161,7 +161,9 @@ public class MangaSelected extends ActionBarActivity
             Log.d(TAG,arrayLists.toString());
             taskresults = arrayLists;
             s=taskresults.get(0).get(0);
-            adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_list_item_1,new ArrayList<String>(Arrays.asList(taskresults.get(1).get(0))))
+            if(!taskresults.get(1).isEmpty())
+            {
+                adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_list_item_1,new ArrayList<String>(Arrays.asList(taskresults.get(1).get(0))))
             {
                 @Override
                 public View getView(int position, View convertView, ViewGroup parent)
@@ -172,6 +174,8 @@ public class MangaSelected extends ActionBarActivity
                     return view;
                 }
             };
+            }
+            if(!taskresults.get(1).isEmpty())
             descp.setAdapter(adapter);
             pd.dismiss();
             bitmapTask.execute();
@@ -225,6 +229,7 @@ public class MangaSelected extends ActionBarActivity
             }
             finalresult.add(mangaimages);
             NodeList nodeList2 = root.getElementsByTagName("p");
+            if(nodeList2.item(0).hasChildNodes())
             mangadescp.add(nodeList2.item(0).getFirstChild().getNodeValue());
             finalresult.add(mangadescp);
             NodeList nodeList3 = root.getElementsByTagName("a");

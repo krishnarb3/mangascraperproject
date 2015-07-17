@@ -26,7 +26,7 @@ public class ImageActivity extends Activity implements GestureDetector.OnGesture
     String TAG="TAG";
     String manganame;
     int chapterno;
-    ImageView imageView;
+    TouchImageView imageView;
     private FullScreenImageAdapter adapter;
     ArrayList<String> bitmapspaths = new ArrayList<>();
     Boolean t=true;
@@ -38,7 +38,7 @@ public class ImageActivity extends Activity implements GestureDetector.OnGesture
         Bundle bundle = getIntent().getExtras();
         manganame = bundle.getString("manganame");
         chapterno = bundle.getInt("chapterno");
-        imageView = (ImageView) findViewById(R.id.image);
+        imageView = (TouchImageView) findViewById(R.id.image);
         viewpager = (ViewPager) findViewById(R.id.viewpager);
         Log.d(TAG, manganame + " - manganame");
         while(t)
