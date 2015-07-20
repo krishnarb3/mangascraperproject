@@ -63,7 +63,7 @@ public class databaseclass
         private static final String UID = "_id";
         private static final String MANGANAME = "Manganame";
         private static final String CHAPTERNUMBER = "Chapternumber";
-        private static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" + UID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + MANGANAME + " VARCHAR(255), " + CHAPTERNUMBER + " UNIQUE VARCHAR(255));";
+        private static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" + UID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + MANGANAME + " VARCHAR(255), " + CHAPTERNUMBER + " VARCHAR(255));";
         private static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
         private Context context;
 
