@@ -1,0 +1,63 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="com.dev.pro.noob.rb.mangaproject.MangaSelected">
+    <TextView
+        android:text="@string/hello_world"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primarycolordark"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:textColor="#fff"
+        android:textAlignment="center"
+        android:id="@+id/manganame"
+        android:textSize="@dimen/abc_text_size_large_material"/>
+    <ImageView
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:id="@+id/mangaimage"
+        android:layout_marginLeft="10dp"
+        android:layout_above="@+id/downloadbutton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Description"
+        android:textSize="@dimen/abc_text_size_large_material"
+        android:id="@+id/descriptiontext"
+        android:textColor="#ff2fc3f1"
+        android:layout_below="@+id/manganame"
+        android:layout_alignRight="@+id/mangadescription"
+        android:layout_alignEnd="@+id/mangadescription"
+        android:layout_alignLeft="@+id/mangadescription"
+        android:layout_alignStart="@+id/mangadescription"/>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:id="@+id/mangadescription"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="10dp"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:layout_toRightOf="@+id/mangaimage"
+        android:layout_toEndOf="@+id/mangaimage"
+        android:layout_above="@+id/downloadbutton"
+        android:layout_below="@+id/descriptiontext"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Download Chapters"
+        android:textColor="#fff"
+        android:background="@color/primarycolordark"
+        android:id="@+id/downloadbutton"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="5dp"
+        />
+
+</RelativeLayout>
