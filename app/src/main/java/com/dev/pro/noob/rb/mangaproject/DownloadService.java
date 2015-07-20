@@ -163,6 +163,7 @@ public class DownloadService extends IntentService
         @Override
         protected void onPostExecute(Void avoid)
         {
+
             long id2 = helper.insert(manganame,chapterno);
             Toast.makeText(getApplicationContext(),"ALL Images Saved Successfully",Toast.LENGTH_SHORT).show();
             super.onPostExecute(avoid);
@@ -266,6 +267,7 @@ public class DownloadService extends IntentService
         Intent intent = new Intent(NOTIFICATION_SERVICE);
         intent.putExtra("progress",i+1);
         intent.putExtra("totalimages",j);
+        intent.putExtra("chapterno",chapterno);
         Log.d(TAG,i+"progress");
         sendBroadcast(intent);
     }

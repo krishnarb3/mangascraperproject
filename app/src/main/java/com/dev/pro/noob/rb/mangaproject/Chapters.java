@@ -41,7 +41,7 @@ import java.util.Set;
 public class Chapters extends ActionBarActivity
 {
     ProgressDialog pd;
-    ProgressBar pb;
+    ProgressBar[] pb;
     public String TAG="TAG";
     ListView listView;
     File path;
@@ -61,17 +61,18 @@ public class Chapters extends ActionBarActivity
             Bundle bundle = getIntent().getExtras();
             if(intent.hasExtra("progress"))
             {
+                pd.dismiss();
                 progress_progressbar= intent.getIntExtra("progress", 1);
                 totalpages = intent.getIntExtra("totalimages", 1);
-                Log.d(TAG,"PROGRESS"+progress_progressbar);
-                pb.setProgress((int)(((float)progress_progressbar/totalpages)*100));
+                Integer chapterno = intent.getIntExtra("chapterno",1)-1;
+                Log.d(TAG,"chapterno"+chapterno);
+                pb[chapterno].setProgress((int)(((float)progress_progressbar/totalpages)*100));
                 if(progress_progressbar==totalpages)
-                    pb.setVisibility(View.INVISIBLE);
+                    pb[chapterno].setVisibility(View.INVISIBLE);
 
             }
             if(intent.hasExtra("manganame"))
             {
-                pb = (ProgressBar)globalview.findViewById(R.id.chaptersrow_progressbar);
                 String manganame = bundle.getString("manganame");
                 recievechapterno = bundle.getInt("chapterno");
                 //Log.d(TAG, recievechapterno + "");
@@ -96,6 +97,7 @@ public class Chapters extends ActionBarActivity
         Bundle bundle = getIntent().getExtras();
         listView = (ListView)findViewById(R.id.chapter);
         chapterslinks=bundle.getStringArrayList("chapterslinks");
+        pb = new ProgressBar[chapterslinks.size()];
         String manganame = bundle.getString("manganame");
         String chapternoslocal = sharedPreferences.getString(manganame,"");
         if(!chapternoslocal.equals(""))
@@ -113,26 +115,31 @@ public class Chapters extends ActionBarActivity
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
             {
-                if(pb==null)
-                    pb=(ProgressBar)view.findViewById(R.id.chaptersrow_progressbar);
-                globalview = view;
-                pb.getProgressDrawable().setColorFilter(R.color.accentcolor, PorterDuff.Mode.SRC_IN);
-                pb.setVisibility(View.VISIBLE);
-                pb.setProgress(0);
+
+                pb[i]=(ProgressBar)view.findViewById(R.id.chaptersrow_progressbar);
+                pb[i].getProgressDrawable().setColorFilter(Color.parseColor("#FF4081"), PorterDuff.Mode.MULTIPLY);
+                pb[i].setVisibility(View.VISIBLE);
+                pb[i].setProgress(0);
                 //pd = ProgressDialog.show(Chapters.this,"","Loading...",true);
                 Intent intent = new Intent(Chapters.this,DownloadService.class);
                 intent.putExtra("page1",chapterslinks.get(i));
                 intent.putExtra("manganame", finalManganame);
                 intent.putExtra("chapterno",i+1);
+                Toast.makeText(Chapters.this,"Download Starting...\n Please Wait...",Toast.LENGTH_LONG).show();
+                pd = ProgressDialog.show(Chapters.this,"","Loading",true);
+                pd.setCanceledOnTouchOutside(true);
                 Log.d(TAG,chapterslinks.toString());
                 Log.d(TAG,i+"- chapterno");
-                if(i+1==recievechapterno)
-                {
-                    view.setBackgroundColor(Color.BLUE);
-                }
                 startService(intent);
             }
         });
+        int i=listView.getFirstVisiblePosition();
+        Log.d(TAG,i+"i");
+        int l=listView.getLastVisiblePosition();
+        for(;i<l;i++)
+        {
+            Log.d(TAG,chaptersAdapter.getItem(i).equals("Hunter x hunter - 8")+" that");
+        }
     }
 
     @Override

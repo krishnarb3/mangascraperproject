@@ -5,14 +5,20 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" />
-
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/mangaicon"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        <receiver android:name=".AutoStartService">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
         <activity
             android:name=".MainActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,13 +51,21 @@
                 android:value="com.dev.pro.noob.rb.mangaproject.MangaSelected" />
         </activity>
 
-        <service android:name=".DownloadService" />
+        <service
+            android:name=".DownloadService"
+            android:icon="@drawable/mangaicon" />
 
         <activity
             android:name=".ImageActivity"
             android:label="@string/title_activity_image"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
         </activity>
+
+        <service
+            android:name=".Checkforlatestmanga"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
     </application>
 
 </manifest>

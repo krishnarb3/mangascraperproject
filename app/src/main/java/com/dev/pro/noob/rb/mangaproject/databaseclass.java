@@ -24,7 +24,7 @@ public class databaseclass
         ContentValues contentValues = new ContentValues();
         contentValues.put(databasehelper.MANGANAME,manganame);
         contentValues.put(databasehelper.CHAPTERNUMBER,chapternumber);
-        long id = sq.insert(databasehelper.TABLE_NAME,null,contentValues);
+        long id = sq.insertWithOnConflict(databasehelper.TABLE_NAME,null,contentValues,SQLiteDatabase.CONFLICT_REPLACE);
         return id;
     }
     public int delete(String name,int chapternumber)
@@ -63,7 +63,7 @@ public class databaseclass
         private static final String UID = "_id";
         private static final String MANGANAME = "Manganame";
         private static final String CHAPTERNUMBER = "Chapternumber";
-        private static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" + UID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + MANGANAME + " VARCHAR(255), " + CHAPTERNUMBER + " VARCHAR(255));";
+        private static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" + UID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + MANGANAME + " VARCHAR(255), " + CHAPTERNUMBER + " UNIQUE VARCHAR(255));";
         private static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
         private Context context;
 

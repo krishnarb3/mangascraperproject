@@ -2,12 +2,14 @@ package com.dev.pro.noob.rb.mangaproject;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentTransaction;
+import android.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -42,7 +44,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public class MainActivity extends ActionBarActivity implements ItemFragment.OnFragmentInteractionListener,ItemFragment_downloaded.OnFragmentInteractionListener
+public class MainActivity extends ActionBarActivity implements ItemFragment.OnFragmentInteractionListener,ItemFragment_downloaded.OnFragmentInteractionListener,HomeFragment.OnFragmentInteractionListener,SettingsFragment.OnFragmentInteractionListener
 {
     public databaseclass helper;
     public String TAG="TAG";
@@ -58,7 +60,7 @@ public class MainActivity extends ActionBarActivity implements ItemFragment.OnFr
     private int[] chapternos;
     EditText editText;
     Boolean mostpopular=true;
-
+    int imagequality;
     SharedPreferences preferences;
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -68,8 +70,12 @@ public class MainActivity extends ActionBarActivity implements ItemFragment.OnFr
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar)findViewById(R.id.app_bar);
         toolbar.setTitleTextColor(Color.WHITE);
+        toolbar.setNavigationIcon(R.drawable.ic_drawer);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        startService(new Intent(MainActivity.this,Checkforlatestmanga.class));
         preferences = getSharedPreferences("fullmangalistnames", Context.MODE_PRIVATE);
         helper = new databaseclass(this);
         dataarray = helper.getAllData();
@@ -86,11 +92,12 @@ public class MainActivity extends ActionBarActivity implements ItemFragment.OnFr
         navbarfragment=(Navbarfragment)getSupportFragmentManager().findFragmentById(R.id.navbarfragment);
         navbarfragment.setUp((DrawerLayout)findViewById(R.id.drawerlayout),toolbar);
         drawerLayout = (DrawerLayout)findViewById(R.id.drawerlayout);
-        drawerlistener = new ActionBarDrawerToggle(this,drawerLayout,R.drawable.drawertoggle,R.string.drawertoggleopen,R.string.drawertoggleclose)
+        drawerlistener = new ActionBarDrawerToggle(this,drawerLayout,R.drawable.ic_drawer,R.string.drawertoggleopen,R.string.drawertoggleclose)
         {
             @Override
             public void onDrawerOpened(View drawerView)
             {
+                toolbar.setNavigationIcon(R.drawable.ic_back);
                 Toast.makeText(getApplicationContext(),"Drawer opened",Toast.LENGTH_SHORT).show();
                 super.onDrawerOpened(drawerView);
             }
@@ -98,15 +105,32 @@ public class MainActivity extends ActionBarActivity implements ItemFragment.OnFr
             @Override
             public void onDrawerClosed(View drawerView)
             {
+                toolbar.setNavigationIcon(R.drawable.ic_drawer);
                 Toast.makeText(getApplicationContext(),"Drawer closed",Toast.LENGTH_SHORT).show();
                 super.onDrawerClosed(drawerView);
             }
+
+            //@Override
+            /*public void onDrawerSlide(View drawerView, float slideOffset)
+            {
+                if(slideOffset)
+                super.onDrawerSlide(drawerView, slideOffset);
+            }*/
         };
         drawerLayout.setDrawerListener(drawerlistener);
+        drawerlistener.setDrawerIndicatorEnabled(true);
         drawerLayout.openDrawer(Gravity.LEFT);
+        drawerLayout.post(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                drawerlistener.syncState();
+            }
+        });
         final ListView listView = (ListView)findViewById(R.id.list_fragment);
         final ArrayList<String> arrayList = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.NavbarlistArray)));
-        final int[] imagesarray = {R.drawable.home,R.drawable.trending,R.drawable.yingyang,R.drawable.download,R.drawable.settings,R.drawable.exit};
+        final int[] imagesarray = {R.drawable.home,R.drawable.trending,R.drawable.yingyang,R.drawable.download,R.drawable.settings,R.drawable.bug,R.drawable.exit};
         navbaradapter adapter = new navbaradapter(getApplicationContext(),arrayList,imagesarray);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -120,6 +144,16 @@ public class MainActivity extends ActionBarActivity implements ItemFragment.OnFr
                     TextView textView=(TextView)listItem.findViewById(R.id.listtext);
                     textView.setTextColor(Color.WHITE);
                     drawerLayout.closeDrawer(Gravity.LEFT);
+                }
+                if(i==0)
+                {
+                    view.setBackgroundColor(getResources().getColor(R.color.accentcolor));
+                    Toast.makeText(MainActivity.this,"Click on Most Downloaded for mangareader.net's popular manga\nManga List for Full Manga list\nDownloaded Manga for viewing the downloaded Manga",Toast.LENGTH_LONG).show();
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+                    HomeFragment fragment = HomeFragment.newInstance(manganames);
+                    ft.replace(R.id.mainfragment,fragment,"Main Fragment");
+                    ft.commit();
                 }
                 if(i==1)
                 {
@@ -139,7 +173,8 @@ public class MainActivity extends ActionBarActivity implements ItemFragment.OnFr
                     editText.getLayoutParams().height=30;
                     editText.setHint("ENNAMA");
                     editText.addTextChangedListener(watcher);
-                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
                     if(preferences!=null)
                     {
                         Set<String> set = preferences.getStringSet("sharedString_manganames", new HashSet<String>());
@@ -188,10 +223,33 @@ public class MainActivity extends ActionBarActivity implements ItemFragment.OnFr
 
                         }
                     });
-                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
                     ItemFragment_downloaded ifd = ItemFragment_downloaded.newInstance(manganames,chapternos);
                     ft.replace(R.id.mainfragment,ifd,"Main Fragment");
                     ft.commit();
+                }
+                if(i==4)
+                {
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+                    SettingsFragment sf = SettingsFragment.newInstance("","");
+                    ft.replace(R.id.mainfragment,sf,"Main Fragment");
+                    ft.commit();
+                    imagequality = sf.imagequality;
+                }
+                if(i==5)
+                {
+                    Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                            "mailto", "krishnarb3@gmail.com", null));
+                    intent.putExtra(Intent.EXTRA_SUBJECT,"Bug Report - Manga Downloader");
+                    startActivity(Intent.createChooser(intent, "Choose an Email client :"));
+                }
+                if(i==6)
+                {
+                    view.setBackgroundColor(getResources().getColor(R.color.accentcolor));
+                    finish();
+                    System.exit(0);
                 }
             }
         });
@@ -273,7 +331,8 @@ public class MainActivity extends ActionBarActivity implements ItemFragment.OnFr
             try
             {
                 SharedPreferences.Editor editor=preferences.edit();
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
                 ItemFragment fragment = ItemFragment.newInstance(arrayLists.get(0), arrayLists.get(1));
                 curfrag_manganames=arrayLists.get(0);
                 curfrag_mangalinks=arrayLists.get(1);
@@ -339,7 +398,8 @@ public class MainActivity extends ActionBarActivity implements ItemFragment.OnFr
         protected void onPostExecute(ArrayList<ArrayList<String>> arrayLists)
         {
             pd.dismiss();
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
             try
             {
                 ItemFragment fragment = ItemFragment.newInstance(arrayLists.get(0), arrayLists.get(1));
@@ -466,6 +526,12 @@ public class MainActivity extends ActionBarActivity implements ItemFragment.OnFr
     public void onFragmentInteraction(String id)
     {
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
     }
 }
 

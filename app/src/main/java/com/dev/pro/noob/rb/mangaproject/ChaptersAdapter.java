@@ -1,6 +1,7 @@
 package com.dev.pro.noob.rb.mangaproject;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,15 +24,51 @@ public class ChaptersAdapter extends ArrayAdapter<String>
         super(context,R.layout.chaptersrow,arrayList);
         this.newarray=arrayList;
     }
+    static class ViewHolder {
+        TextView text;
+        ProgressBar progressBar;
+    }
+    @Override
 
+    public int getViewTypeCount() {
+
+        return getCount();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+
+        return position;
+    }
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-        LayoutInflater inflater = LayoutInflater.from(getContext());
+        LayoutInflater inflater;
+        ViewHolder holder = null;
+        if(convertView==null)
+        {
+            inflater = LayoutInflater.from(getContext());
+            convertView = inflater.inflate(R.layout.chaptersrow,parent,false);
+            holder = new ViewHolder();
+            holder.text = (TextView)convertView.findViewById(R.id.chaptersrow_text);
+            //holder.progressBar = (ProgressBar)convertView.findViewById(R.id.chaptersrow_progressbar);
+            convertView.setTag(holder);
+        }
+        else
+        {
+            holder = (ViewHolder)convertView.getTag();
+
+        }
+        holder.text.setText(newarray.get(position));
+        return convertView;
+        /*LayoutInflater inflater = LayoutInflater.from(getContext());
         final View view = inflater.inflate(R.layout.chaptersrow,parent,false);
         TextView textview = (TextView)view.findViewById(R.id.chaptersrow_text);
         textview.setText(newarray.get(position));
-        //pb=(ProgressBar)view.findViewById(R.id.chaptersrow_progressbar);
+        pb = (ProgressBar)view.findViewById(R.id.chaptersrow_progressbar);
+        Log.d(TAG,position+"" );*/
+
+        /*//pb=(ProgressBar)view.findViewById(R.id.chaptersrow_progressbar);
         /*view.setFocusable(true);
         view.setOnClickListener(new View.OnClickListener()
         {
@@ -41,7 +78,11 @@ public class ChaptersAdapter extends ArrayAdapter<String>
                 pb.setProgress(50);
             }
         });*/
-        return view;
+//        return view;
+    }
+    public void setProgress(int i)
+    {
+        pb.setProgress(i);
     }
     public void setProgressBarvisibility(Boolean b)
     {

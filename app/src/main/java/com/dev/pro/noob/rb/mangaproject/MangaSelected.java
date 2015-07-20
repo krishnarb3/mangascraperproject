@@ -53,43 +53,138 @@ public class MangaSelected extends ActionBarActivity
     ListView descp;
     ImageView imageView;
     ArrayAdapter<String> adapter;
+    Bitmap bm=null;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manga_selected);
-        Bundle bundle = getIntent().getExtras();
-        manganame = bundle.getString("manganame");
-        mangalink = bundle.getString("mangalink");
-        mangalink1 = "http://www.mangareader.net"+bundle.getString("mangalink");
-        Log.d(TAG,mangalink1);
-        TextView textView = (TextView)findViewById(R.id.manganame);
-        textView.setText(manganame.toUpperCase());
-        task = new getMangainfoTask();
-        try
+        if (savedInstanceState != null)
         {
-            task.execute();
-            Toast.makeText(getApplicationContext(),taskresults.toString(),Toast.LENGTH_SHORT).show();
-        } catch (Exception e)
-        {
-        }
-        imageView = (ImageView)findViewById(R.id.mangaimage);
-        bitmapTask = new getBitmapTask();
-        Bitmap bm = null;
-        descp = (ListView)findViewById(R.id.mangadescription);
-        Button download = (Button)findViewById(R.id.downloadbutton);
-        download.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
+            Log.d(TAG, "Saved Instance State - chapterlinks - " + savedInstanceState.get("chapterlinks"));
+            if (savedInstanceState.get("chapterlinks") != null)
             {
-                Intent intent = new Intent(getApplicationContext(),Chapters.class);
-                intent.putExtra("chapterslinks",taskresults.get(2));
-                intent.putExtra("manganame",manganame);
-                startActivity(intent);
+                Bundle bundle = getIntent().getExtras();
+                manganame = bundle.getString("manganame");
+                mangalink = bundle.getString("mangalink");
+                TextView textView = (TextView) findViewById(R.id.manganame);
+                textView.setText(manganame.toUpperCase());
+                imageView = (ImageView) findViewById(R.id.mangaimage);
+                Bitmap bitmap = (Bitmap) savedInstanceState.get("image");
+                imageView.setImageBitmap(bitmap);
+                descp = (ListView) findViewById(R.id.mangadescription);
+                adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1,Arrays.asList(savedInstanceState.getStringArray("descp")))
+                {
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent)
+                    {
+                        View view = super.getView(position, convertView, parent);
+                        TextView textView = (TextView) view.findViewById(android.R.id.text1);
+                        textView.setTextColor(Color.BLACK);
+                        return view;
+                    }
+                };
+                descp.setAdapter(adapter);
+                ArrayList<String> chapterlinks = new ArrayList<>();
+                chapterlinks = savedInstanceState.getStringArrayList("chapterlinks");
+                Button download = (Button) findViewById(R.id.downloadbutton);
+                final ArrayList<String> finalChapterlinks = chapterlinks;
+                download.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        Intent intent = new Intent(getApplicationContext(), Chapters.class);
+                        intent.putExtra("chapterslinks", finalChapterlinks);
+                        intent.putExtra("manganame", manganame);
+                        startActivity(intent);
+                    }
+                });
             }
-        });
+            else
+            {
+                Bundle bundle = getIntent().getExtras();
+                manganame = bundle.getString("manganame");
+                mangalink = bundle.getString("mangalink");
+                mangalink1 = "http://www.mangareader.net" + bundle.getString("mangalink");
+                Log.d(TAG, mangalink1);
+                TextView textView = (TextView) findViewById(R.id.manganame);
+                textView.setText(manganame.toUpperCase());
+                task = new getMangainfoTask();
+                try
+                {
+                    task.execute();
+                    Toast.makeText(getApplicationContext(), taskresults.toString(), Toast.LENGTH_SHORT).show();
+                } catch (Exception e)
+                {
+                }
+                imageView = (ImageView) findViewById(R.id.mangaimage);
+                bitmapTask = new getBitmapTask();
+                Bitmap bm = null;
+                descp = (ListView) findViewById(R.id.mangadescription);
+                Button download = (Button) findViewById(R.id.downloadbutton);
+                download.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        Intent intent = new Intent(getApplicationContext(), Chapters.class);
+                        intent.putExtra("chapterslinks", taskresults.get(2));
+                        intent.putExtra("manganame", manganame);
+                        startActivity(intent);
+                    }
+                });
+            }
+        }
+        else
+        {
+            Bundle bundle = getIntent().getExtras();
+            manganame = bundle.getString("manganame");
+            mangalink = bundle.getString("mangalink");
+            mangalink1 = "http://www.mangareader.net" + bundle.getString("mangalink");
+            Log.d(TAG, mangalink1);
+            TextView textView = (TextView) findViewById(R.id.manganame);
+            textView.setText(manganame.toUpperCase());
+            task = new getMangainfoTask();
+            try
+            {
+                task.execute();
+                Toast.makeText(getApplicationContext(), taskresults.toString(), Toast.LENGTH_SHORT).show();
+            } catch (Exception e)
+            {
+            }
+            imageView = (ImageView) findViewById(R.id.mangaimage);
+            bitmapTask = new getBitmapTask();
+            Bitmap bm = null;
+            descp = (ListView) findViewById(R.id.mangadescription);
+            Button download = (Button) findViewById(R.id.downloadbutton);
+            download.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    Intent intent = new Intent(getApplicationContext(), Chapters.class);
+                    intent.putExtra("chapterslinks", taskresults.get(2));
+                    intent.putExtra("manganame", manganame);
+                    startActivity(intent);
+                }
+            });
+        }
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        if(taskresults!=null)
+        {
+            outState.putStringArrayList("chapterlinks", taskresults.get(2));
+            outState.putStringArrayList("descp", new ArrayList<String>(Arrays.asList(taskresults.get(1).get(0))));
+            outState.putParcelable("image", bm);
+        }
+
+    }
+
     public class getBitmapTask extends AsyncTask<Void,Void,Bitmap>
     {
         ProgressDialog pd;
@@ -103,7 +198,6 @@ public class MangaSelected extends ActionBarActivity
         @Override
         protected Bitmap doInBackground(Void... voids)
         {
-            Bitmap bm=null;
             InputStream in = null;
             try
             {

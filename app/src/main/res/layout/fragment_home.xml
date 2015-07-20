@@ -1,0 +1,17 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="com.dev.pro.noob.rb.mangaproject.HomeFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="40dp"
+        android:textSize="25sp"
+        android:textColor="@color/material_blue_grey_800"
+        android:id="@+id/hometext"
+        android:text="@string/hello_blank_fragment"/>
+
+</FrameLayout>
